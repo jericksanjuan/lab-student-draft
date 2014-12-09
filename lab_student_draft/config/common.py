@@ -42,12 +42,19 @@ class Common(Configuration):
         'allauth',  # registration
         'allauth.account',  # registration
         'allauth.socialaccount',  # registration
+        'django_extensions',  # extensions
+        'django_tables2',  # tables2
+        'django_tables2_reports',  # tables2
+        'tables2_extras',  # tables2
+        'crudwrapper',  # crudwrapper
+        'widget_tweaks',  # widget-tweaks
     )
 
     # Apps specific for this project go here.
     LOCAL_APPS = (
         'users',  # custom users app
-        # Your stuff: custom apps go here
+        'students',  # students
+        'labs',  # labs
     )
 
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
