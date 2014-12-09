@@ -8,14 +8,20 @@ from labs.models import Lab
 
 _PICKVAL = 100
 
+# TODO: Get minimum_groups from settings
+# TODO: Get maximum groups from settings
+
 
 class Batch(TimeStampedModel):
+    minimum_groups = models.IntegerField(default=1)
+    maximum_groups = models.IntegerField(default=10)
+
     class Meta:
         verbose_name = "Batch"
-        verbose_name_plural = "Batchs"
+        verbose_name_plural = "Batches"
 
     def __unicode__(self):
-        return u'{}'.format(self.created)
+        return u'{}-{}'.format(self.created.month, self.created.year)
 
 
 class StudentGroup(TimeStampedModel):
