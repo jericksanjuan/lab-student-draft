@@ -50,5 +50,6 @@ django-tables2==0.15.0
 -e git+https://github.com/jericksanjuan/django-tables2-extras.git/#egg=django_tables2_extras
 
 django-extensions==1.4.8
+model-mommy==1.2.2
 
 

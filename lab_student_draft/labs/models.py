@@ -10,6 +10,7 @@ class Lab(models.Model):
         'students.StudentGroup', through='students.Selection',
         blank=True, null=True, related_name='+')
     batch_shares = models.ManyToManyField('students.Batch', through='Share')
+    active = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = "Lab"
