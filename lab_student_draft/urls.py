@@ -29,8 +29,10 @@ urlpatterns = patterns('',
     url(r'^avatar/', include('avatar.urls')),
 
     # Your stuff: custom urls go here
-    url(r'^students/', include('students.urls')),
-    url(r'^labs/', include('labs.urls')),
+    url(r'^rank-preference/$', 'students.views.rank_preference', name="rank-preference"),
+    url(r'^update-group/$', 'students.views.update_group', name="update-group"),
+    url(r'^select-group/$', 'labs.views.select_group', name="select-group"),
+
 
 
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

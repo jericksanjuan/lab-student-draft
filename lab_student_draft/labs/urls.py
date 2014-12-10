@@ -6,5 +6,5 @@ from . import views
 
 urlpatterns = patterns(
     "",
-    url(r'^select-group/(?P<pk>\d+)/$', views.select_group, name="select-group"),
+    url(r'^select-group/$', views.select_group, name="select-group"),
 )

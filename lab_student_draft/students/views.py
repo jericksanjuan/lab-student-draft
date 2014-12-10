@@ -1,7 +1,21 @@
+from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
-from braces.views import SetHeadlineMixin
+from braces.views import SetHeadlineMixin, LoginRequiredMixin
 from crudwrapper.views import UpdateWithInlinesView, InlineFormSet
 from .models import StudentGroup, Student, GroupPreference
+
+
+class StudentGroupRequiredMixin(LoginRequiredMixin):
+
+    def get_student_group(self):
+        try:
+            student_group = self.request.user.studentgroup
+        except:
+            raise PermissionDenied
+        return student_group
+
+    def get_object(self):
+        return self.get_student_group()
 
 
 class PreferenceInline(InlineFormSet):
@@ -11,7 +25,7 @@ class PreferenceInline(InlineFormSet):
     extra = 0
 
 
-class RankPreferenceView(SetHeadlineMixin, UpdateWithInlinesView):
+class RankPreferenceView(StudentGroupRequiredMixin, SetHeadlineMixin, UpdateWithInlinesView):
     model = StudentGroup
     inlines = [PreferenceInline]
     fields = []
@@ -19,7 +33,7 @@ class RankPreferenceView(SetHeadlineMixin, UpdateWithInlinesView):
     headline = "Specify you Lab Preferences"
 
     def get_success_url(self):
-        return reverse('rank-preference', kwargs=(dict(pk=self.object.pk)))
+        return reverse('rank-preference',)
 
     def get_form_valid_message(self):
         return "Thank you for specifying your Lab choices!"
@@ -31,7 +45,7 @@ class StudentInline(InlineFormSet):
     extra = 0
 
 
-class UpdateStudentGroupView(SetHeadlineMixin, UpdateWithInlinesView):
+class UpdateStudentGroupView(StudentGroupRequiredMixin, SetHeadlineMixin, UpdateWithInlinesView):
     model = StudentGroup
     inlines = [StudentInline]
     fields = []
@@ -39,7 +53,7 @@ class UpdateStudentGroupView(SetHeadlineMixin, UpdateWithInlinesView):
     headline = "Update Group Members"
 
     def get_success_url(self):
-        return reverse('update-group', kwargs=(dict(pk=self.object.pk)))
+        return reverse('update-group',)
 
     def get_form_valid_message(self):
         return "Group information updated!"

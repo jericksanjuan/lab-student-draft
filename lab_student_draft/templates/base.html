@@ -2,7 +2,7 @@
 <html lang="en" ng-app>
   <head>
     <meta charset="utf-8">
-    <title>{% block title %}lab_student_draft{% endblock title %}</title>
+    <title>{% block title %}Lab Student Draft{% endblock title %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -35,10 +35,16 @@
         <a class="navbar-brand" href="/">Lab Student Draft</a>
         <ul class="nav navbar-nav">
           <li class="active"><a href="{% url 'home' %}">Home</a></li>
-          <li><a href="{% url 'about' %}">About</a></li>
+          {#<li><a href="{% url 'about' %}">About</a></li>#}
 
           {% if request.user.is_authenticated %}
             <li><a href="{% url 'users:detail' request.user.username  %}">{% trans "My Profile" %}</a></li>
+            {% if request.user.studentgroup %}
+              <li><a href="{% url 'rank-preference' %} ">Rank Preference</a></li>
+              <li><a href="{% url 'update-group' %} ">Update Group</a></li>
+            {% elif request.user.lab %}
+              <li><a href="{% url 'select-group' %} ">Select Group</a></li>
+            {% endif %}
             <li><a href="{% url 'account_logout' %}">{% trans "Logout" %}</a></li>
           {% else %}
             <li><a href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a></li>
