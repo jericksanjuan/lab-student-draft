@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <p class="lead">
+
+    </p>
+
+    <form action="" method="post">{% csrf_token %}
+        {% crispy form %}
+
+        <div class="btn-group pull-right">
+            <input class="btn btn-success" type="submit" value="Submit">
+            <a href="{{ cancel_url|default:'..' }}" class="btn btn-link">Back</a>
+        </div>
+        <div class="clearfix"></div>
+
+        <div class="table-responsive">
+            <table class="table table-condensed table-hover table-striped">
+            <thead>
+                <tr>
+                <th>Student Group</th>
+                <th>Select?</th>
+                </tr>
+            </thead>
+            <tbody>
+        {% for formset in inlines %}
+        {{ formset.management_form }}
+
+            {% for form in formset %}
+                <tr>
+                    <td>
+                    <strong>{{ form.instance.student_group }}</strong>
+                    <ul class="list-unstyled">
+                        {% for student in form.instance.student_group.student_set.all %}
+                            <li>{{ student}}</li>
+                        {% endfor %}
+                    </ul>
+
+                    </td>
+                    <td><div class="controls col-xs-9">{{ form.is_selected|add_class:"checkbox form-control" }}</div></td>
+
+                    {{ form.id }}
+                </tr>
+            {% empty %}
+            <tr>
+                <td>Nothing to display</td>
+            </tr>
+            {% endfor %}
+        {% empty %}
+            <tr>
+                <td>Nothing to display</td>
+            </tr>
+        {% endfor %}
+            </tbody>
+            </table>
+        </div>
+
+        <div class="btn-group pull-right">
+            <input class="btn btn-success" type="submit" value="Submit">
+            <a href="{{ cancel_url|default:'..' }}" class="btn btn-link">Back</a>
+        </div>
+    </form>
+{% endblock %}
+

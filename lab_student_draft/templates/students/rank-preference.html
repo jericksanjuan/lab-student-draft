@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <p class="lead">
+
+    </p>
+
+    <form action="" method="post">{% csrf_token %}
+        {% crispy form %}
+
+        <div class="btn-group pull-right">
+            <input class="btn btn-success" type="submit" value="Submit">
+            <a href="{{ cancel_url|default:'..' }}" class="btn btn-link">Back</a>
+        </div>
+        <div class="clearfix"></div>
+
+        <div class="table-responsive">
+            <table class="table table-condensed table-hover table-striped">
+            <thead>
+                <tr>
+                <th>Lab Group</th>
+                <th>Specify Preference (1-highest)</th>
+                </tr>
+            </thead>
+            <tbody>
+        {% for formset in inlines %}
+        {{ formset.management_form }}
+
+            {% for form in formset %}
+                <tr>
+                    <td>
+                    <strong>{{ form.instance.lab }}</strong>
+                    </td>
+                    <td><div class="controls col-xs-9">{{ form.preference|add_class:"select form-control" }}</div></td>
+
+                    {{ form.id }}
+                </tr>
+            {% empty %}
+            <tr>
+                <td>Nothing to display</td>
+            </tr>
+            {% endfor %}
+        {% empty %}
+            <tr>
+                <td>Nothing to display</td>
+            </tr>
+        {% endfor %}
+            </tbody>
+            </table>
+        </div>
+
+        <div class="btn-group pull-right">
+            <input class="btn btn-success" type="submit" value="Submit">
+            <a href="{{ cancel_url|default:'..' }}" class="btn btn-link">Back</a>
+        </div>
+    </form>
+{% endblock %}
+
