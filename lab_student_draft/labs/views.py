@@ -2,7 +2,7 @@ from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from braces.views import SetHeadlineMixin, LoginRequiredMixin
 from crudwrapper.views import (
-    UpdateWithInlinesView, InlineFormSet
+    UpdateWithInlinesView, InlineFormSet, BaseInlineFormSet
 )
 from tables2_extras import ModelSingleTableView
 
@@ -23,11 +23,20 @@ class LabRequiredMixin(LoginRequiredMixin):
         return self.get_lab_group()
 
 
+class SelectionFormSet(BaseInlineFormSet):
+    def get_queryset(self):
+        if not hasattr(self, '_queryset'):
+            qs = super(SelectionFormSet, self).get_queryset().filter(student_group__lab=None)
+            self._queryset = qs
+        return self._queryset
+
+
 class SelectionInline(InlineFormSet):
     model = Selection
     fields = ('is_selected',)
     can_delete = False
     extra = 0
+    formset_class = SelectionFormSet
 
 
 class SelectGroupView(LabRequiredMixin, SetHeadlineMixin, UpdateWithInlinesView):

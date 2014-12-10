@@ -15,6 +15,12 @@
   </div>
 
 {% if object == request.user %}
+<div class="row">
+  {% if request.user.studentgroup and request.user.studentgroup.lab %}
+    <h2>Your group has been assigned to {{ request.user.studentgroup.lab }}.</h2>
+  {% endif %}
+</div>
+
 <!-- Action buttons -->
 <div class="row">
 
