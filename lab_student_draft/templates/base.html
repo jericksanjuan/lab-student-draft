@@ -41,7 +41,6 @@
             <li><a href="{% url 'users:detail' request.user.username  %}">{% trans "My Profile" %}</a></li>
             {% if request.user.studentgroup %}
               <li><a href="{% url 'rank-preference' %} ">Rank Preference</a></li>
-              <li><a href="{% url 'update-group' %} ">Update Group</a></li>
             {% elif request.user.lab %}
               <li><a href="{% url 'select-group' %} ">Select Group</a></li>
             {% endif %}
@@ -84,7 +83,7 @@
       <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
       <!-- Your stuff: Third-party javascript libraries go here -->
-
+ q
       <!-- place project specific Javascript in this file -->
       <script src="{% static 'js/project.js' %}"></script>
     {% endblock javascript %}

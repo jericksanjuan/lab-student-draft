@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load widget_tweaks %}
 {% load crispy_forms_tags %}
+{% load avatar_tags %}
+
 
 {% block content %}
     <p class="lead">
@@ -31,7 +33,7 @@
             {% for form in formset %}
                 <tr>
                     <td>
-                    <strong>{{ form.instance.student_group }}</strong>
+                    <strong>{% avatar form.instance.student_group.user %}{{ form.instance.student_group }}</strong>
                     <ul class="list-unstyled">
                         {% for student in form.instance.student_group.student_set.all %}
                             <li>{{ student}}</li>
