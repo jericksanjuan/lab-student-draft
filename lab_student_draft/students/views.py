@@ -2,6 +2,8 @@ from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from braces.views import SetHeadlineMixin, LoginRequiredMixin
 from crudwrapper.views import UpdateWithInlinesView, InlineFormSet
+from tables2_extras import ModelSingleTableView
+
 from .models import StudentGroup, Student, GroupPreference
 
 
@@ -58,5 +60,15 @@ class UpdateStudentGroupView(StudentGroupRequiredMixin, SetHeadlineMixin, Update
     def get_form_valid_message(self):
         return "Group information updated!"
 
+
+class ResultsListView(SetHeadlineMixin, ModelSingleTableView):
+    model = StudentGroup
+    table_fields = ('user', 'students', 'lab')
+    headline = 'Results'
+    paginate_by = 20
+    orderable = False
+
+
 rank_preference = RankPreferenceView.as_view()
 update_group = UpdateStudentGroupView.as_view()
+results_list = ResultsListView.as_view()

@@ -38,6 +38,9 @@ class StudentGroup(TimeStampedModel):
     def __unicode__(self):
         return u'{} group'.format(self.user)
 
+    def students(self):
+        return ', '.join([unicode(x) for x in self.student_set.all()])
+
 
 class Student(models.Model):
     student_group = models.ForeignKey('StudentGroup')

@@ -42,7 +42,13 @@
             {% if request.user.studentgroup %}
               <li><a href="{% url 'rank-preference' %} ">Rank Preference</a></li>
             {% elif request.user.lab %}
+
               <li><a href="{% url 'select-group' %} ">Select Group</a></li>
+              <li><a href="{% url 'lab-results' %} ">Assigned Groups</a></li>
+
+            {% elif request.user.is_superuser %}
+              <li><a href="{% url 'results-list' %} ">Draft Results</a></li>
+
             {% endif %}
             <li><a href="{% url 'account_logout' %}">{% trans "Logout" %}</a></li>
           {% else %}

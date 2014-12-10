@@ -19,6 +19,28 @@ class Lab(models.Model):
     def __unicode__(self):
         return self.name
 
+    @property
+    def desired_groups(self):
+        share = self.share_set.last()
+        return share.desired_groups
+
+    @desired_groups.setter
+    def desired_groups(self, value):
+        share = self.share_set.last()
+        share.desired_groups = value
+        share.save()
+
+    @property
+    def slots_taken(self):
+        share = self.share_set.last()
+        return share.slots_taken
+
+    @slots_taken.setter
+    def slots_taken(self, value):
+        share = self.share_set.last()
+        share.slots_taken = value
+        share.save()
+
 
 class Share(models.Model):
     lab = models.ForeignKey('Lab')

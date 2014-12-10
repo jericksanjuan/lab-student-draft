@@ -5,6 +5,7 @@ from crudwrapper.views import (
     UpdateWithInlinesView, InlineFormSet
 )
 from tables2_extras import ModelSingleTableView
+
 from .models import Lab
 from students.models import Selection, StudentGroup
 
@@ -43,4 +44,16 @@ class SelectGroupView(LabRequiredMixin, SetHeadlineMixin, UpdateWithInlinesView)
         return 'Thank you for your selection!'
 
 
+class LabResultsView(LabRequiredMixin, SetHeadlineMixin, ModelSingleTableView):
+    model = StudentGroup
+    table_fields = ('user', 'students')
+    headline = 'Assigned Student Groups'
+    orderable = False
+
+    def get_queryset(self):
+        lab = self.get_lab_group()
+        return StudentGroup.objects.filter(lab=lab)
+
+
 select_group = SelectGroupView.as_view()
+lab_results = LabResultsView.as_view()

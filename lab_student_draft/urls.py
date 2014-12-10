@@ -32,6 +32,9 @@ urlpatterns = patterns('',
     url(r'^rank-preference/$', 'students.views.rank_preference', name="rank-preference"),
     url(r'^update-group/$', 'students.views.update_group', name="update-group"),
     url(r'^select-group/$', 'labs.views.select_group', name="select-group"),
+    url(r'^results-list/$', 'students.views.results_list', name="results-list"),
+    url(r'^lab-results/$', 'labs.views.lab_results', name="lab-results"),
+
 
 
 

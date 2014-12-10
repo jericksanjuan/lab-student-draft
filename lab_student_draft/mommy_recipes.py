@@ -1,15 +1,35 @@
-from random import randint
+from random import randint, choice
 
+from django.contrib.auth.hashers import make_password
 from model_mommy.recipe import Recipe, foreign_key, seq
+
 
 from students.models import Batch, StudentGroup, Student, GroupPreference, Selection
 from labs.models import Lab, Share
 from users.models import User
 
+
+_PERSON = (
+    'Elsa', 'Ezra', 'Sasha', 'Atticus', 'Skyler', 'Nikita',
+    'Arden', 'Mila', 'Olaf', 'Imogen', 'Ayla', 'Misha',
+    'Hazel', 'Mira', 'Cosette', 'Kezia', 'Keegan', 'Quinn',
+    'Hannibal', 'Theo', 'Enzo', 'Lexie', 'Jesse', 'Kalani',
+    'Kalina', 'Nina', 'Sven', 'Maeve', 'Tristan', 'Kristoff',
+    'Aslan', 'Ariel', 'Elysia', 'Avalon', 'Irene', 'Ezio',
+    'Anisa', 'Kiera', 'Agnes', 'Kaelan', 'Jael', 'Tamara',
+    'Ephraim', 'Reena', 'April', 'Lennox', 'Yasmin', 'Sloan',
+    'Milan', 'Gael', 'Hans', 'Mimi', 'Deja', 'Stanley',
+    'Sally', 'Jody', 'Ansel', 'Renata', 'Ishmael', 'Alfie',
+    'Matthias', 'Kailani', 'August', 'Lula', 'Spencer',
+)
+
+name = lambda: choice(_PERSON)
+
+
 user = Recipe(
     User,
     username=seq('user'),
-    password='pass'
+    password=make_password('pass')
 )
 
 
@@ -24,7 +44,7 @@ lab = Recipe(
 )
 
 share = Recipe(
-    Share
+    Share,
 )
 
 student_group = Recipe(
@@ -34,7 +54,9 @@ student_group = Recipe(
 )
 
 student = Recipe(
-    Student
+    Student,
+    first_name=name,
+    last_name=name,
 )
 
 group_preference = Recipe(
@@ -52,7 +74,7 @@ def create_test_data():
     labs = []
     for i in xrange(10):
         lab_obj = lab.make()
-        share.make(lab=lab_obj, batch=batch_obj)
+        share.make(lab=lab_obj, batch=batch_obj, desired_groups=randint(1, 10))
         labs.append(lab_obj)
 
     for i in xrange(30):
