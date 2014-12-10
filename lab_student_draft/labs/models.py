@@ -12,6 +12,10 @@ class Lab(models.Model):
     batch_shares = models.ManyToManyField('students.Batch', through='Share')
     active = models.BooleanField(default=True)
 
+    groups_picked = models.IntegerField(default=0)
+    slots_taken = models.IntegerField(default=0)
+    desired_groups = models.IntegerField(default=1)
+
     class Meta:
         verbose_name = "Lab"
         verbose_name_plural = "Labs"
@@ -19,33 +23,49 @@ class Lab(models.Model):
     def __unicode__(self):
         return self.name
 
+    # @property
+    # def desired_groups(self):
+    #     share = self.share_set.last()
+    #     return share.desired_groups
+
+    # @desired_groups.setter
+    # def desired_groups(self, value):
+    #     share = self.share_set.last()
+    #     share.desired_groups = value
+    #     share.save()
+
+    # @property
+    # def slots_taken(self):
+    #     share = self.share_set.last()
+    #     return share.slots_taken
+
+    # @slots_taken.setter
+    # def slots_taken(self, value):
+    #     share = self.share_set.last()
+    #     share.slots_taken = value
+    #     share.save()
+
+    # @property
+    # def groups_picked(self):
+    #     share = self.share_set.last()
+    #     return share.groups_picked
+
+    # @groups_picked.setter
+    # def groups_picked(self, value):
+    #     share = self.share_set.last()
+    #     share.groups_picked = value
+    #     share.save()
+
     @property
-    def desired_groups(self):
-        share = self.share_set.last()
-        return share.desired_groups
-
-    @desired_groups.setter
-    def desired_groups(self, value):
-        share = self.share_set.last()
-        share.desired_groups = value
-        share.save()
-
-    @property
-    def slots_taken(self):
-        share = self.share_set.last()
-        return share.slots_taken
-
-    @slots_taken.setter
-    def slots_taken(self, value):
-        share = self.share_set.last()
-        share.slots_taken = value
-        share.save()
+    def remaining_slots(self):
+        return self.desired_groups - self.slots_taken
 
 
 class Share(models.Model):
     lab = models.ForeignKey('Lab')
     batch = models.ForeignKey('students.Batch')
 
+    groups_picked = models.IntegerField(default=0)
     slots_taken = models.IntegerField(default=0)
     desired_groups = models.IntegerField(default=1)
 

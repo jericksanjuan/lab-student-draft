@@ -6,7 +6,7 @@
 
 {% block content %}
     <p class="lead">
-
+        {{ request.user.lab.slots_taken }} of {{ request.user.lab.desired_groups }} slots filled.
     </p>
 
     <form action="" method="post">{% csrf_token %}

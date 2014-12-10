@@ -78,7 +78,7 @@ def create_test_data():
 
     labs = []
     for i in xrange(10):
-        lab_obj = lab.make()
+        lab_obj = lab.make(desired_groups=randint(1, 10))
         share.make(lab=lab_obj, batch=batch_obj, desired_groups=randint(1, 10))
         labs.append(lab_obj)
 
@@ -92,15 +92,16 @@ def create_test_data():
         for lab_obj in labs:
             group_preference.make(
                 lab=lab_obj, student_group=student_group_obj, preference=randint(1, max_pref))
-            if lab_obj.slots_taken < lab_obj.desired_groups * 2:
+            if lab_obj.groups_picked < lab_obj.desired_groups * 2:
                 cond = true_or_false()
             else:
                 cond = False
             selection.make(
                 lab=lab_obj, student_group=student_group_obj, is_selected=cond, phase='1')
             if cond:
-                lab_obj.slots_taken = lab_obj.slots_taken + 1
-                if lab_obj.slots_taken >= lab_obj.desired_groups * 2:
+                lab_obj.groups_picked = lab_obj.groups_picked + 1
+                lab_obj.save()
+                if lab_obj.groups_picked >= lab_obj.desired_groups * 2:
                     continue
 
 
@@ -114,18 +115,20 @@ def update_for_phase2():
     print 'labs count', labs.count()
     print 'student_groups count', student_groups.count()
 
+    Lab.objects.all().update(groups_picked=0)
+
     for student_group_obj in student_groups:
 
         for lab_obj in labs:
-            if lab_obj.slots_taken < lab_obj.desired_groups:
+            if lab_obj.remaining_slots > 0:
                 cond = true_or_false()
             else:
                 cond = False
             selection.make(
                 lab=lab_obj, student_group=student_group_obj, is_selected=cond, phase='2')
             if cond:
-                lab_obj.slots_taken = lab_obj.slots_taken + 1
-                if lab_obj.slots_taken >= lab_obj.desired_groups:
+                lab_obj.groups_picked = lab_obj.groups_picked + 1
+                if lab_obj.groups_picked >= lab_obj.remaining_slots * 2:
                     continue
 
 
