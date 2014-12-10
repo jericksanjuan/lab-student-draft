@@ -56,6 +56,8 @@ class Lab(models.Model):
     #     share.groups_picked = value
     #     share.save()
 
+    # TODO: Use redis for storing temporary values
+
     @property
     def remaining_slots(self):
         return self.desired_groups - self.slots_taken

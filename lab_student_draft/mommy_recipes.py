@@ -1,4 +1,3 @@
-import math
 from random import randint, choice
 
 from django.db.models import F
@@ -78,11 +77,11 @@ def create_test_data():
 
     labs = []
     for i in xrange(10):
-        lab_obj = lab.make(desired_groups=randint(1, 10))
-        share.make(lab=lab_obj, batch=batch_obj, desired_groups=randint(1, 10))
+        lab_obj = lab.make(desired_groups=randint(1, 3))
+        share.make(lab=lab_obj, batch=batch_obj, desired_groups=randint(1, 5))
         labs.append(lab_obj)
 
-    for i in xrange(30):
+    for i in xrange(50):
         max_pref = len(labs)
 
         student_group_obj = student_group.make(batch=batch_obj)
@@ -109,13 +108,14 @@ def update_for_phase2():
     """
     Update selections for labs with remaining slots after phase 1.
     """
-    labs = Lab.objects.filter(share__slots_taken__lt=F("share__desired_groups"))
+    labs = Lab.objects.filter(slots_taken__lt=F("desired_groups"))
     student_groups = StudentGroup.objects.filter(lab=None)
 
     print 'labs count', labs.count()
     print 'student_groups count', student_groups.count()
 
     Lab.objects.all().update(groups_picked=0)
+    Selection.objects.all().delete()
 
     for student_group_obj in student_groups:
 

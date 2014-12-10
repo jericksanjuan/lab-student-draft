@@ -14,7 +14,8 @@ class Command(NoArgsCommand):
         std_count = 0
         end_std = math.floor(start_std * 0.6)
 
-        selobjs = Selection.objects.filter(phase='1').order_by('-selection_score')
+        # selobjs = Selection.objects.filter(phase='1').order_by('-selection_score')
+        selobjs = Selection.objects.all().order_by('-selection_score')
         selected_groups = []
         filled_labs = []
 

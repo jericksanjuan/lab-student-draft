@@ -1,6 +1,6 @@
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
-from braces.views import SetHeadlineMixin, LoginRequiredMixin
+from braces.views import SetHeadlineMixin, LoginRequiredMixin, SuperuserRequiredMixin
 from crudwrapper.views import (
     UpdateWithInlinesView, InlineFormSet, BaseInlineFormSet
 )
@@ -64,5 +64,12 @@ class LabResultsView(LabRequiredMixin, SetHeadlineMixin, ModelSingleTableView):
         return StudentGroup.objects.filter(lab=lab)
 
 
+class LabSlotsListView(SuperuserRequiredMixin, SetHeadlineMixin, ModelSingleTableView):
+    model = Lab
+    table_fields = ('name', 'groups_picked', 'slots_taken', 'desired_groups')
+    headline = 'Lab Slot Status'
+
+
 select_group = SelectGroupView.as_view()
 lab_results = LabResultsView.as_view()
+lab_slots = LabSlotsListView.as_view()

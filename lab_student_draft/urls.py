@@ -34,8 +34,7 @@ urlpatterns = patterns('',
     url(r'^select-group/$', 'labs.views.select_group', name="select-group"),
     url(r'^results-list/$', 'students.views.results_list', name="results-list"),
     url(r'^lab-results/$', 'labs.views.lab_results', name="lab-results"),
-
-
+    url(r'^lab-slots/$', 'labs.views.lab_slots', name="lab-slots"),
 
 
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

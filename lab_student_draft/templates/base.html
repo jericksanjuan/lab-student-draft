@@ -48,8 +48,9 @@
 
             {% elif request.user.is_superuser %}
               <li><a href="{% url 'results-list' %} ">Draft Results</a></li>
-
+              <li><a href="{% url 'lab-slots' %} ">Lab Slots</a></li>
             {% endif %}
+
             <li><a href="{% url 'account_logout' %}">{% trans "Logout" %}</a></li>
           {% else %}
             <li><a href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a></li>
@@ -89,7 +90,7 @@
       <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
       <!-- Your stuff: Third-party javascript libraries go here -->
- q
+
       <!-- place project specific Javascript in this file -->
       <script src="{% static 'js/project.js' %}"></script>
     {% endblock javascript %}
