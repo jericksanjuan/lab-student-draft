@@ -63,8 +63,11 @@ group_preference = Recipe(
     GroupPreference,
 )
 
+true_or_false = lambda: randint(0, 1) == 1
+
 selection = Recipe(
-    Selection
+    Selection,
+    is_selected=true_or_false,
 )
 
 
@@ -78,7 +81,7 @@ def create_test_data():
         labs.append(lab_obj)
 
     for i in xrange(30):
-        max_pref = len(labs) + 1
+        max_pref = len(labs)
 
         student_group_obj = student_group.make(batch=batch_obj)
         for i in xrange(3):
@@ -87,8 +90,16 @@ def create_test_data():
         for lab_obj in labs:
             group_preference.make(
                 lab=lab_obj, student_group=student_group_obj, preference=randint(1, max_pref))
+            if lab_obj.slots_taken < lab_obj.desired_groups:
+                cond = true_or_false()
+            else:
+                cond = False
             selection.make(
-                lab=lab_obj, student_group=student_group_obj)
+                lab=lab_obj, student_group=student_group_obj, is_selected=cond)
+            if cond:
+                lab_obj.slots_taken = lab_obj.slots_taken + 1
+                if lab_obj.slots_taken >= lab_obj.desired_groups:
+                    continue
 
 
 def delete_test_data():
