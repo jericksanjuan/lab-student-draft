@@ -1,5 +1,7 @@
+import math
 from random import randint, choice
 
+from django.db.models import F
 from django.contrib.auth.hashers import make_password
 from model_mommy.recipe import Recipe, foreign_key, seq
 
@@ -90,16 +92,56 @@ def create_test_data():
         for lab_obj in labs:
             group_preference.make(
                 lab=lab_obj, student_group=student_group_obj, preference=randint(1, max_pref))
+            if lab_obj.slots_taken < lab_obj.desired_groups * 2:
+                cond = true_or_false()
+            else:
+                cond = False
+            selection.make(
+                lab=lab_obj, student_group=student_group_obj, is_selected=cond, phase='1')
+            if cond:
+                lab_obj.slots_taken = lab_obj.slots_taken + 1
+                if lab_obj.slots_taken >= lab_obj.desired_groups * 2:
+                    continue
+
+
+def update_for_phase2():
+    """
+    Update selections for labs with remaining slots after phase 1.
+    """
+    labs = Lab.objects.filter(share__slots_taken__lt=F("share__desired_groups"))
+    student_groups = StudentGroup.objects.filter(lab=None)
+
+    print 'labs count', labs.count()
+    print 'student_groups count', student_groups.count()
+
+    for student_group_obj in student_groups:
+
+        for lab_obj in labs:
             if lab_obj.slots_taken < lab_obj.desired_groups:
                 cond = true_or_false()
             else:
                 cond = False
             selection.make(
-                lab=lab_obj, student_group=student_group_obj, is_selected=cond)
+                lab=lab_obj, student_group=student_group_obj, is_selected=cond, phase='2')
             if cond:
                 lab_obj.slots_taken = lab_obj.slots_taken + 1
                 if lab_obj.slots_taken >= lab_obj.desired_groups:
                     continue
+
+
+def update_for_phase3():
+    """
+    Update selection for labs to select from the remaining groups with aim of
+    """
+    remaining_students = StudentGroup.objects.filter(lab=None)
+
+    rcount = remaining_students.count()
+    lcount = Lab.objects.count()
+    print 'remaining students count', rcount
+    print 'Lab count', lcount
+
+    target = update_for_phase3
+    print 'target', target
 
 
 def delete_test_data():
