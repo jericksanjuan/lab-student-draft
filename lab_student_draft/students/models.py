@@ -89,6 +89,14 @@ class Selection(models.Model):
             self.selection_score, self.lab,
             self.student_group, self.phase)
 
+    @property
+    def score_color(self):
+        base_score = self.selection_score % 100
+        if base_score > 5:
+            return 'green'
+        else:
+            return 'yellow'
+
 
 def update_selection_score(sender, instance, raw, *args, **kwargs):
     if raw:

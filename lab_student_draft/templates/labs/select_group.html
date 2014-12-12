@@ -19,7 +19,7 @@
         <div class="clearfix"></div>
 
         <div class="table-responsive">
-            <table class="table table-condensed table-hover table-striped">
+            <table class="table table-condensed">
             <thead>
                 <tr>
                 <th>Student Group</th>
@@ -31,9 +31,9 @@
         {{ formset.management_form }}
 
             {% for form in formset %}
-                <tr>
+                <tr class="{{ form.instance.score_color }}">
                     <td>
-                    <strong>{% avatar form.instance.student_group.user %}{{ form.instance.student_group }}</strong>
+                    <strong>{% avatar form.instance.student_group.user "36x36" %}{{ form.instance.student_group }}</strong>
                     <ul class="list-unstyled">
                         {% for student in form.instance.student_group.student_set.all %}
                             <li>{{ student}}</li>
