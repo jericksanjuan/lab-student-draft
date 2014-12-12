@@ -1,3 +1,4 @@
+from django.forms import ValidationError
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from braces.views import SetHeadlineMixin, LoginRequiredMixin, SuperuserRequiredMixin
@@ -29,6 +30,24 @@ class SelectionFormSet(BaseInlineFormSet):
             qs = super(SelectionFormSet, self).get_queryset().filter(student_group__lab=None)
             self._queryset = qs
         return self._queryset
+
+    def clean(self):
+        if any(self.errors):
+            return
+        instance = self.instance
+
+        target_count = instance.remaining_slots * 2
+        pick_count = 0
+
+        # handle round 3
+        if target_count == 0:
+            target_count = 1000
+
+        for form in self.forms:
+            if form.cleaned_data.get('is_selected'):
+                pick_count = pick_count + 1
+                if pick_count >= target_count:
+                    raise ValidationError('You can only select up to twice of your remaining slots!')
 
 
 class SelectionInline(InlineFormSet):

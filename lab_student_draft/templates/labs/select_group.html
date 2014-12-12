@@ -29,6 +29,7 @@
             <tbody>
         {% for formset in inlines %}
         {{ formset.management_form }}
+        {{ formset.non_form_errors }}
 
             {% for form in formset %}
                 <tr class="{{ form.instance.score_color }}">

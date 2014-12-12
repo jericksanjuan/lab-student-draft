@@ -30,6 +30,7 @@ class StudentGroup(TimeStampedModel):
     lab = models.ForeignKey(Lab, null=True, blank=True, related_name="assigned_set")
     group_preferences = models.ManyToManyField(
         Lab, through='GroupPreference', null=True, blank=True)
+    has_preference = models.BooleanField('Has Submitted Preference', default=False)
 
     class Meta:
         verbose_name = "Student Group"

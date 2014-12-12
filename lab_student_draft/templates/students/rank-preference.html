@@ -29,11 +29,12 @@
             <tbody>
         {% for formset in inlines %}
         {{ formset.management_form }}
+        {{ formset.non_form_errors }}
 
             {% for form in formset %}
                 <tr>
                     <td>
-                    <strong>{% avatar form.instance.lab.user %} {{ form.instance.lab }}</strong>
+                    <strong>{% avatar form.instance.lab.user "36x36" %} {{ form.instance.lab }}</strong>
                     </td>
                     <td><div class="controls col-xs-9">{{ form.preference|add_class:"select form-control" }}</div></td>
 

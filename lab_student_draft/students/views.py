@@ -1,10 +1,14 @@
+from django.forms import ValidationError, Select
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from braces.views import SetHeadlineMixin, LoginRequiredMixin
-from crudwrapper.views import UpdateWithInlinesView, InlineFormSet
+from crudwrapper.views import UpdateWithInlinesView, InlineFormSet, BaseInlineFormSet
+from crudwrapper.forms import CrispyModelForm
 from tables2_extras import ModelSingleTableView
+from model_utils import Choices
 
 from .models import StudentGroup, Student, GroupPreference
+from labs.models import Lab
 
 
 class StudentGroupRequiredMixin(LoginRequiredMixin):
@@ -20,11 +24,35 @@ class StudentGroupRequiredMixin(LoginRequiredMixin):
         return self.get_student_group()
 
 
+class PreferenceFormSet(BaseInlineFormSet):
+    def clean(self):
+        if any(self.errors):
+            return
+
+        scores = []
+        for form in self.forms:
+            score = form.cleaned_data.get('preference')
+            if score in scores:
+                raise ValidationError('Preferences for each lab should be unique!')
+            scores.append(score)
+
+
+class PreferenceForm(CrispyModelForm):
+
+    class Meta:
+        model = GroupPreference
+        fields = ('preference',)
+        lab_count = Lab.objects.filter(active=True).count()+1
+        widgets = {'preference': Select(choices=Choices(*range(1, lab_count)))}
+
+
 class PreferenceInline(InlineFormSet):
     model = GroupPreference
     fields = ('preference',)
     can_delete = False
     extra = 0
+    form_class = PreferenceForm
+    formset_class = PreferenceFormSet
 
 
 class RankPreferenceView(StudentGroupRequiredMixin, SetHeadlineMixin, UpdateWithInlinesView):
@@ -33,6 +61,12 @@ class RankPreferenceView(StudentGroupRequiredMixin, SetHeadlineMixin, UpdateWith
     fields = []
     template_name = 'students/rank-preference.html'
     headline = "Specify you Lab Preferences"
+
+    def forms_valid(self, *args, **kwargs):
+        response = super(RankPreferenceView, self).forms_valid(*args, **kwargs)
+        self.object.has_preference = True
+        self.object.save()
+        return response
 
     def get_success_url(self):
         return reverse('rank-preference',)
@@ -63,7 +97,7 @@ class UpdateStudentGroupView(StudentGroupRequiredMixin, SetHeadlineMixin, Update
 
 class ResultsListView(SetHeadlineMixin, ModelSingleTableView):
     model = StudentGroup
-    table_fields = ('user', 'students', 'lab')
+    table_fields = ('user', 'students', 'has_preference', 'lab')
     headline = 'Results'
     paginate_by = 20
     orderable = False
